@@ -1,8 +1,8 @@
 from pygame.locals import *
 
-class Game(object):
-    def run():
-        print "hello!"
+" class Game(object):"
 
-game = Game()
-game.run
+def run():
+    print ("hello!")
+
+run()
