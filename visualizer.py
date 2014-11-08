@@ -4,6 +4,7 @@ import time
 import pyaudio
 import wave
 import sys
+import vistest.py
 
 " class Game(object):"
 
