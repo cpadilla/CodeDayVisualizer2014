@@ -1,4 +1,5 @@
 from pygame.locals import *
+from thread import *
 import numpy as np
 import pygame
 import time
@@ -13,7 +14,11 @@ DISPLAYSURF = pygame.display.set_mode((400, 300))
 pygame.display.set_caption('Test Screen')
 DISPLAYSURF.fill(WHITE)
 
-catPic = pygame.image.load('blip.png')
+catPic = []
+for x in range(1, 21):
+    temp = pygame.image.load('blip.png')
+    catPic.append(temp)
+
 catx = 10
 caty = 10
 
@@ -40,6 +45,7 @@ def run():
     data = wf.readframes(CHUNK)
 
     # play stream (3)
+    frame = 0
     while data != '':
         stream.write(data)
 
@@ -49,20 +55,28 @@ def run():
         fftData = abs(np.fft.rfft(indata))**2
 
         # print (fftData[1] / 100).radjust(20)
-        nums = fftData[1] / 10000000000
+        # print int(fftData[1])
 
-        lin = "|"
+        ''' lin = "|"
         bar = ""
         for x in range(1, int(nums)):
             bar = bar + lin
-        print bar
+        print bar '''
         #print '{0:20f}'.format(fftData[1]
 
-        # catx = 10
-        # caty = fftData[1] * .001
-        # DISPLAYSURF.blit(catPic, (catx, caty))
-	# pygame.display.update()
-	# fpsClock.tick(FPS)
+        DISPLAYSURF.fill(WHITE)
+        for x in range(1,20):
+            nums = fftData[x] / 10000000000
+            catx = 10 * x
+            caty = nums / 10
+            if (frame == 5):
+                print x
+                DISPLAYSURF.blit(catPic[x], (catx, caty))
+                pygame.display.update()
+                fpsClock.tick(FPS)
+                frame = 0
+            else:
+                frame = frame + 1
 
 
         # read some more data
