@@ -1,5 +1,4 @@
 import sys, pygame, time, random, pyaudio
-import numpy as np
 from pygame.locals import *
 
 pygame.init()

@@ -1,10 +1,10 @@
 from pygame.locals import *
+import numpy as np
 import pygame
 import time
 import pyaudio
 import wave
 import sys
-"import test.py"
 
 " class Game(object):"
 
@@ -13,8 +13,11 @@ def run():
 
 run()
 CHUNK = 1024
+# use a Blackman window
+window = np.blackman(CHUNK)
 
 wf = wave.open('music.wav', 'rb')
+swidth = wf.getsampwidth()
 
 # instantiate PyAudio (1)
 p = pyaudio.PyAudio()
@@ -31,6 +34,15 @@ data = wf.readframes(CHUNK)
 # play stream (3)
 while data != '':
     stream.write(data)
+
+    indata = np.array(wave.struct.unpack("%dh"%(len(data)/swidth), data))
+
+    # take the fft and square each value
+    fftData = abs(np.fft.rfft(indata))**2
+
+    print fftData[1]
+
+    # read some more data
     data = wf.readframes(CHUNK)
 
 # stop stream (4)
