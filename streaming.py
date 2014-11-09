@@ -129,34 +129,34 @@ class MusicStreamer( object ):
             power = np.log10(np.abs(fftData))**2
             power = np.reshape(power,(16,CHUNK/16))
             matrix = np.int_(np.average(power,axis=1))
-            print(matrix)
+            # print(matrix)
 
             ### BASS Events ###
             if np.abs(oldBass - np.mean(matrix[bass])) > 4:
-                self.raiseBassDropFrequencyEvent(1)
+                self.raiseBassDropFrequencyEvent(np.abs(oldBass - np.mean(matrix[bass])))
 
             oldBass = np.mean(matrix[bass])
 
             if np.mean(matrix[bass]) > BASSTHRESH:
-                self.raiseBassFrequencyEvent(1)
+                self.raiseBassFrequencyEvent(np.mean(matrix[bass]))
 
             ### MIDS Events ###
             if np.abs(oldMids - np.mean(matrix[mids])) > 4:
-                self.raiseMidsDropFrequencyEvent(1)
+                self.raiseMidsDropFrequencyEvent(np.abs(oldMids - np.mean(matrix[mids])))
 
             oldMids = np.mean(matrix[mids])
 
             if np.mean(matrix[mids]) > MIDTHRESH:
-                self.raiseMidsFrequencyEvent(1)
+                self.raiseMidsFrequencyEvent(np.mean(matrix[mids]))
 
             ### HIGHS Events ###
             if np.abs(oldHighs - np.mean(matrix[highs])) > 4:
-                self.raiseHighsDropFrequencyEvent(1)
+                self.raiseHighsDropFrequencyEvent(np.abs(oldHighs - np.mean(matrix[highs])))
 
             oldHighs = np.mean(matrix[highs])
 
             if np.mean(matrix[highs]) > HIGHTHRESH:
-                self.raiseHighsDropFrequencyEvent(1)
+                self.raiseHighsDropFrequencyEvent(np.mean(matrix[highs]))
 
             # read some more data
             data = wf.readframes(CHUNK)

@@ -16,6 +16,8 @@ class Game( object ):
     board = []
     jumping = 0
     jumpvalue = 0
+    treeshake = 0
+    trunkshake = 0
     WHITE = (255, 255, 255)
     FPS = 30
     fpsClock = pygame.time.Clock()
@@ -25,8 +27,33 @@ class Game( object ):
         print "Game dispatcher: {0}".format(self.event_dispatcher)
 
         # Listen for Frequency events
+        # BEAT = "beatEvent"
+        # BASS = "bassEvent"
+        # MIDS = "midsEvent"
+        # HIGHS = "highsEvent"
+        # HIGHDROP = "highDropEvent"
+        # MIDSDROP = "midsDropEvent"
+        # BASSDROP = "bassDropEvent"
         self.event_dispatcher.add_event_listener(
-            event.MusicEvent.FREQUENCY, self.on_event
+            event.MusicEvent.BEAT, self.on_event
+        )
+        self.event_dispatcher.add_event_listener(
+            event.MusicEvent.BASS, self.on_event
+        )
+        self.event_dispatcher.add_event_listener(
+            event.MusicEvent.MIDS, self.on_event
+        )
+        self.event_dispatcher.add_event_listener(
+            event.MusicEvent.HIGHS, self.on_event
+        )
+        self.event_dispatcher.add_event_listener(
+            event.MusicEvent.HIGHDROP, self.on_event
+        )
+        self.event_dispatcher.add_event_listener(
+            event.MusicEvent.MIDSDROP, self.on_event
+        )
+        self.event_dispatcher.add_event_listener(
+            event.MusicEvent.BASSDROP, self.on_event
         )
 
         jumping = 0
@@ -59,9 +86,20 @@ class Game( object ):
         Event handler for MusicEvents events
         """
         # print "game recieved frequency value: " + str(event.data[1])
-        if event.type == "frequencyEvent":
-            self.jumpvalue = event.data[1] - 4
+        # BEAT = "beatEvent"
+        # BASS = "bassEvent"
+        # MIDS = "midsEvent"
+        # HIGHS = "highsEvent"
+        # HIGHDROP = "highDropEvent"
+        # MIDSDROP = "midsDropEvent"
+        # BASSDROP = "bassDropEvent"
+        if event.type == "highDropEvent":
+            self.treeshake = event.data
             jumping = 1
+        if event.type == "midsDropEvent":
+            self.trunkshake = event.data
+        if event.type == "bassDropEvent":
+            self.jumpvalue = event.data
         # self.caty = self.jumpvalue
         # print caty * 10
         # self.DISPLAYSURF.fill(self.WHITE)
@@ -71,6 +109,8 @@ class Game( object ):
 
     def update( self ):
         self.skt.boardy = self.jumpvalue * 2
+        self.scene.treetrunky = self.trunkshake * 2
+        self.scene.treeheady = self.treeshake * 2
         # for event in self.event_dispatcher.getEvents():
         #     if event == "frequencyEvent":
         #         self.caty = self.jumpvalue
@@ -81,7 +121,7 @@ class Game( object ):
             self.update()
 
             # this is super necessary
-            print self.skt.boardy
+            print "skate: {0} tree: {1} trunk: {2}".format(self.skt.boardy, self.scene.treeheady, self.scene.treetrunky)
 
             # clear screen
             self.DISPLAYSURF.fill(self.WHITE)
@@ -91,10 +131,12 @@ class Game( object ):
             self.DISPLAYSURF.blit(self.board[1], (self.skt.boardx + 20, 400 - 10 - self.skt.boardy))
             self.DISPLAYSURF.blit(self.board[2], (self.skt.boardx - 30, 400 - 15 - self.skt.boardy))
 
-            # scenery
+            # scener
             # trees
-            self.DISPLAYSURF.blit(self.scene.treetrunk, (self.scene.treetrunkx, self.scene.treetrunky))
-            self.DISPLAYSURF.blit(self.scene.treehead, (self.scene.treeheadx, self.scene.treeheady))
+            # print self.scene.treeheady
+            # print self.scene.treetrunky
+            self.DISPLAYSURF.blit(self.scene.treetrunk, (self.scene.treetrunkx, 400 - 150 - self.scene.treetrunky))
+            self.DISPLAYSURF.blit(self.scene.treehead, (self.scene.treeheadx, 400 - 150 - 10 - self.scene.treeheady))
 
 
             pygame.display.update()
