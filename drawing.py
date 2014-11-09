@@ -94,11 +94,14 @@ class Game( object ):
         # MIDSDROP = "midsDropEvent"
         # BASSDROP = "bassDropEvent"
         if event.type == "highDropEvent":
+            print "highDropEvent"
             self.treeshake = event.data
             jumping = 1
         if event.type == "midsDropEvent":
+            print "midsDropEvent"
             self.trunkshake = event.data
         if event.type == "bassDropEvent":
+            print "bassDropEvent"
             self.jumpvalue = event.data
         # self.caty = self.jumpvalue
         # print caty * 10
