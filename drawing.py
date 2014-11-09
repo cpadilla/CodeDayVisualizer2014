@@ -177,6 +177,7 @@ class Game( object ):
             if self.scene[x].treeheadx < -50 - x * self.distBtwTrees:
                 self.scene[x].treeheadx = 800
 
+
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     raiseKillMePlzEvent(111)
@@ -209,20 +210,22 @@ class Game( object ):
             # print self.scene.treeheady
             # print self.scene.treetrunky
             BG = pygame.image.load("BG1.png")
+            BG2 = pygame.image.load("BG2.png")
+            BG3 = pygame.image.load("BG1.png")
+            if self.gcount <= -800 * 2:
+                self.gcount = 0
             print "count: {0}".format(self.gcount)
             if self.gcount % self.gcountTHRESH == 0:
                 # self.gcount += self.gcountTHRESH
-                self.gcount = 0
                 self.countdown = True
-                BG = pygame.image.load("BG2.png")
-            else:
-                BG = pygame.image.load("BG1.png")
 
             count += 1
 
 
 
             self.DISPLAYSURF.blit(BG, (self.gcount,0))
+            self.DISPLAYSURF.blit(BG2, (self.gcount+800,0))
+            self.DISPLAYSURF.blit(BG3, (self.gcount+800+800,0))
             for x in range(0, len(self.scene)):
                 self.DISPLAYSURF.blit(self.scene[x].treetrunk, (self.scene[x].treetrunkx + x * self.distBtwTrees, 400 - 150 - self.scene[x].treetrunky))
                 self.DISPLAYSURF.blit(self.scene[x].treehead, (self.scene[x].treeheadx + x * self.distBtwTrees, 400 - 150 - self.sktrheight - self.scene[x].treeheady))
