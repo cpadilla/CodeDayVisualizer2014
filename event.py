@@ -53,6 +53,9 @@ class EventDispatcher( object ):
         """
         self._events = None
 
+    def getEvents(self):
+        return self._events
+
     def has_listener(self, event_type, listener):
         """
         Return true if listener is register to event_type

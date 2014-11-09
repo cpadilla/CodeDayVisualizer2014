@@ -21,7 +21,7 @@ class MusicStreamer( object ):
         """
         Dispatch the frequency event
         """
-        print "raising frequency event"
+        # print "raising frequency event"
         event.MusicEvent.data = value
 
         self.event_dispatcher.dispatch_event(
@@ -157,7 +157,6 @@ class MusicStreamer( object ):
 
             if np.mean(matrix[highs]) > HIGHTHRESH:
                 self.raiseHighsDropFrequencyEvent(1)
-
 
             # read some more data
             data = wf.readframes(CHUNK)

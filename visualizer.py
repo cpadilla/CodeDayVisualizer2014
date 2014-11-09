@@ -88,10 +88,13 @@ music = Thread(target = streamer.readMusic, args = ())
 print "hello!"
 game = drawing.Game( dispatcher )
 
+print 0
 music.start()
+print 1
+game.render()
+print 2
 music.join()
 
-game.render()
 
 print "done!"
 
