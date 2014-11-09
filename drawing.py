@@ -76,7 +76,7 @@ class Game( object ):
 
         jumping = 0
 
-        self.DISPLAYSURF = pygame.display.set_mode((800, 400))
+        self.DISPLAYSURF = pygame.display.set_mode((800, 600))
         pygame.display.set_caption('Test Screen')
         self.DISPLAYSURF.fill(self.WHITE)
 
@@ -214,7 +214,9 @@ class Game( object ):
             sk8er = pygame.image.load("sk8er.png")
 
             # scener
-            # trees
+            # sidewalk
+            side = pygame.image.load("sidewalk.png")
+
             # print self.scene.treeheady
             # print self.scene.treetrunky
             BG = pygame.image.load("BG1.png")
@@ -227,15 +229,22 @@ class Game( object ):
                 # self.gcount += self.gcountTHRESH
                 self.countdown = True
 
-            count += 1
+            count -= 1
 
+            if count < -800:
+                print "yppppppppp"
+                count = 0
+
+            self.DISPLAYSURF.blit(side, (count, 470))
 
             self.DISPLAYSURF.blit(BG, (self.gcount,0))
             self.DISPLAYSURF.blit(BG2, (self.gcount+800,0))
             self.DISPLAYSURF.blit(BG3, (self.gcount+800+800,0))
+
+            # trees
             for x in range(0, len(self.scene)):
                 try:
-                    self.DISPLAYSURF.blit(self.scene[x].treetrunk, (self.scene[x].treetrunkx + x * self.distBtwTrees, 400 - 150 - self.scene[x].treetrunky + self.scene[x].yoffset))
+                    self.DISPLAYSURF.blit(self.scene[x].treetrunk, (self.scene[x].treetrunkx + x * self.distBtwTrees, 401 - 150 - self.scene[x].treetrunky + math.sin(self.scene[x].yoffset)))
                 except:
                     print "1"
                     self.DISPLAYSURF.blit(self.scene[x].treetrunk, (self.scene[x].treetrunkx + x * self.distBtwTrees, 400 - 150 - 0 + self.scene[x].yoffset))
@@ -248,28 +257,28 @@ class Game( object ):
 
             # draw board
             try:
-                self.DISPLAYSURF.blit(self.board[0], (self.skt.boardx - 20, 400 - 1.5 - self.skt.boardy))
+                self.DISPLAYSURF.blit(self.board[0], (self.skt.boardx - 20, 400 - 1.5 - self.skt.boardy+ 100))
             except:
                 print "3"
-                self.DISPLAYSURF.blit(self.board[0], (self.skt.boardx - 20, 400 - 1.5 - 0))
+                self.DISPLAYSURF.blit(self.board[0], (self.skt.boardx - 20, 400 - 1.5 - 0+ 100))
             try:
-                self.DISPLAYSURF.blit(self.board[1], (self.skt.boardx + 20, 400 - 1.5 - self.skt.boardy))
+                self.DISPLAYSURF.blit(self.board[1], (self.skt.boardx + 20, 400 - 1.5 - self.skt.boardy+ 100))
             except:
                 print "4"
-                self.DISPLAYSURF.blit(self.board[1], (self.skt.boardx + 20, 400 - 1.5 - 0))
+                self.DISPLAYSURF.blit(self.board[1], (self.skt.boardx + 20, 400 - 1.5 - 0 + 100))
             try:
-                self.DISPLAYSURF.blit(self.board[2], (self.skt.boardx - 30, 400 - 6.5 - self.skt.boardy))
+                self.DISPLAYSURF.blit(self.board[2], (self.skt.boardx - 30, 400 - 6.5 - self.skt.boardy + 100))
             except:
                 print "5"
-                self.DISPLAYSURF.blit(self.board[2], (self.skt.boardx - 30, 400 - 6.5 - 0))
+                self.DISPLAYSURF.blit(self.board[2], (self.skt.boardx - 30, 400 - 6.5 - 0 + 100))
 
             print self.sk8erJump
 
             try:
-                self.DISPLAYSURF.blit(sk8er, (self.skt.boardx - 30, 400 - 6.5 - self.skt.boardy - 124 + self.sk8erJump * 6))
+                self.DISPLAYSURF.blit(sk8er, (self.skt.boardx - 30, 400 - 6.5 - self.skt.boardy - 124 + self.sk8erJump * 6 + 100))
             except:
                 print "strikeout!"
-                self.DISPLAYSURF.blit(sk8er, (self.skt.boardx - 30, 400 - 6.5 - 0 - 124 + 0 ))
+                self.DISPLAYSURF.blit(sk8er, (self.skt.boardx - 30, 400 - 6.5 - 0 - 124 + 0 + 100))
 
 
             pygame.display.update()
