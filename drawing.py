@@ -24,6 +24,9 @@ class Game( object ):
     trunkshake = 0
     distBtwTrees = 120
     treeScrollSpd = 0.75
+    gcount = 0
+    gcountTHRESH = 100
+    countdown = False
     TREES = 10
     WHITE = (255, 255, 255)
     FPS = 30
@@ -121,6 +124,14 @@ class Game( object ):
         # MIDSDROP = "midsDropEvent"
         # BASSDROP = "bassDropEvent"
         # KILLMEPLZ = "KillMePlz"
+        if event.type == "midsEvent":
+            # print event.type
+            if self.countdown == False:
+                self.gcount += 1
+            else:
+                self.gcount -= 1
+                if self.gcount == 0:
+                    self.countdown = False
         if event.type == "highDropEvent":
             # print event.type
             self.treeshake = event.data
@@ -196,10 +207,13 @@ class Game( object ):
             # scener
             # trees
             # print self.scene.treeheady
-            # print self.scene.treetrunky 
+            # print self.scene.treetrunky
             BG = pygame.image.load("BG1.png")
-            if count > 5000:
-                count = 0
+            print "count: {0}".format(self.gcount)
+            if self.gcount % self.gcountTHRESH == 0:
+                # self.gcount += self.gcountTHRESH
+                self.gcount = 0
+                self.countdown = True
                 BG = pygame.image.load("BG2.png")
             else:
                 BG = pygame.image.load("BG1.png")
@@ -208,7 +222,7 @@ class Game( object ):
 
 
 
-            self.DISPLAYSURF.blit(BG, (0,0))
+            self.DISPLAYSURF.blit(BG, (self.gcount,0))
             for x in range(0, len(self.scene)):
                 self.DISPLAYSURF.blit(self.scene[x].treetrunk, (self.scene[x].treetrunkx + x * self.distBtwTrees, 400 - 150 - self.scene[x].treetrunky))
                 self.DISPLAYSURF.blit(self.scene[x].treehead, (self.scene[x].treeheadx + x * self.distBtwTrees, 400 - 150 - self.sktrheight - self.scene[x].treeheady))
