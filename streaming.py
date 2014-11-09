@@ -32,12 +32,12 @@ class MusicStreamer( object ):
         # instantiate PyAudio (1)
         p = pyaudio.PyAudio()
 
-        # open stream (2)
+    # open stream (2)
         stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
-                        channels=wf.getnchannels(),
-                        rate=wf.getframerate(),
-                        output=True)
-        # read data
+                    channels=wf.getnchannels(),
+                    rate=wf.getframerate(),
+                    output=True)
+    # read data
         data = wf.readframes(CHUNK)
 
         while data != '':
@@ -46,13 +46,16 @@ class MusicStreamer( object ):
             indata = np.array(wave.struct.unpack("%dh"%(len(data)/swidth), data))
 
             # take the fft and square each value
-            fftData = abs(np.fft.rfft(indata))**2
 
-
+            fftData = np.abs(np.fft.rfft(indata))
+            fftData = np.delete(fftData,len(fftData)-1)
+            power = np.log10(np.abs(fftData))**2
+            power = np.reshape(power,(8,CHUNK/8))
+            matrix = np.int_(np.average(power,axis=1)/4)
+            print(matrix)
 
             # raise an event (value)
-            if nums > 0:
-                self.raiseFrequencyEvent(0)
+            self.raiseFrequencyEvent(matrix)
 
             # read some more data
             data = wf.readframes(CHUNK)
