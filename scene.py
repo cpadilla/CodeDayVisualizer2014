@@ -9,6 +9,8 @@ class Scene( object ):
     treeheadx = 0
     treeheady = 0
 
+    yoffset = 0
+
     def __init__( self ):
         self.treetrunk = 0
         self.treehead = 0
