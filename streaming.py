@@ -94,6 +94,17 @@ class MusicStreamer( object ):
             event.MusicEvent( event.MusicEvent.HIGHDROP, self )
         )
 
+    def raiseKillMePlzEvent(self, value):
+        """
+        Dispatch the frequency event
+        """
+        print "raising Kill Me Plz event"
+        event.MusicEvent.data = value
+
+        self.event_dispatcher.dispatch_event(
+            event.MusicEvent( event.MusicEvent.KILLMEPLZ, self )
+        )
+
     def readMusic(self):
         CHUNK = 1024
         # print "in this method!"
@@ -116,6 +127,8 @@ class MusicStreamer( object ):
         oldBass = []
         oldMids = []
         oldHighs = []
+        matrixMean = 0
+        meanCounter = 0
 
         while data != '':
             stream.write(data)
@@ -129,34 +142,44 @@ class MusicStreamer( object ):
             power = np.log10(np.abs(fftData))**2
             power = np.reshape(power,(16,CHUNK/16))
             matrix = np.int_(np.average(power,axis=1))
-            # print(matrix)
+            print(matrix)
 
             ### BASS Events ###
             if np.abs(oldBass - np.mean(matrix[bass])) > 4:
-                self.raiseBassDropFrequencyEvent(np.abs(oldBass - np.mean(matrix[bass])))
+                self.raiseBassDropFrequencyEvent()
 
             oldBass = np.mean(matrix[bass])
 
             if np.mean(matrix[bass]) > BASSTHRESH:
-                self.raiseBassFrequencyEvent(np.mean(matrix[bass]))
+                self.raiseBassFrequencyEvent(1)
 
             ### MIDS Events ###
             if np.abs(oldMids - np.mean(matrix[mids])) > 4:
-                self.raiseMidsDropFrequencyEvent(np.abs(oldMids - np.mean(matrix[mids])))
+                self.raiseMidsDropFrequencyEvent(1)
 
             oldMids = np.mean(matrix[mids])
 
             if np.mean(matrix[mids]) > MIDTHRESH:
-                self.raiseMidsFrequencyEvent(np.mean(matrix[mids]))
+                self.raiseMidsFrequencyEvent(1)
 
             ### HIGHS Events ###
             if np.abs(oldHighs - np.mean(matrix[highs])) > 4:
-                self.raiseHighsDropFrequencyEvent(np.abs(oldHighs - np.mean(matrix[highs])))
+                self.raiseHighsDropFrequencyEvent(1)
 
             oldHighs = np.mean(matrix[highs])
 
             if np.mean(matrix[highs]) > HIGHTHRESH:
-                self.raiseHighsDropFrequencyEvent(np.mean(matrix[highs]))
+                self.raiseHighsDropFrequencyEvent(1)
+            
+            ### KILL EVENT ###
+
+            if matrixMean == np.mean(matrix):
+                meanCounter ++;
+
+            matrixMean = np.mean(matrix)
+
+            if meanCounter > 10:
+                self.raiseKillMePlzEvent(111)
 
             # read some more data
             data = wf.readframes(CHUNK)

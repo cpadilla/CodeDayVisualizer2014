@@ -35,6 +35,7 @@ class MusicEvent( Event ):
     HIGHDROP = "highDropEvent"
     MIDSDROP = "midsDropEvent"
     BASSDROP = "bassDropEvent"
+    KILLMEPLZ = "KillMePlz"
 
     data = 0
 
