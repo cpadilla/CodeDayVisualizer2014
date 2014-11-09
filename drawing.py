@@ -6,12 +6,13 @@ import time
 import sys
 import event
 import skater
+import scene
 
 class Game( object ):
 
     skt = skater.Skater()
+    scene = scene.Scene()
 
-    
     board = []
     jumping = 0
     jumpvalue = 0
@@ -34,12 +35,24 @@ class Game( object ):
         pygame.display.set_caption('Test Screen')
         self.DISPLAYSURF.fill(self.WHITE)
 
+# Skateboard
         for x in range(1, 3):
             temp = pygame.image.load('blip.png')
             self.board.append(temp)
 
         temp = pygame.image.load('board.png')
         self.board.append(temp)
+
+# Scenery
+
+# tree
+        #for x in range(0, 2):
+        self.scene.treetrunk = pygame.image.load('treetrunk.png')
+        self.scene.treetrunkx = 30
+        self.scene.treetrunky = 400 - 150
+        self.scene.treehead = pygame.image.load('treehead.png')
+        self.scene.treeheadx = 30 - 10
+        self.scene.treeheady = 400 - 150 - 10
 
     def on_event(self, event ):
         """
@@ -77,6 +90,12 @@ class Game( object ):
             self.DISPLAYSURF.blit(self.board[0], (self.skt.boardx - 20, 400 - 10 - self.skt.boardy))
             self.DISPLAYSURF.blit(self.board[1], (self.skt.boardx + 20, 400 - 10 - self.skt.boardy))
             self.DISPLAYSURF.blit(self.board[2], (self.skt.boardx - 30, 400 - 15 - self.skt.boardy))
+
+            # scenery
+            # trees
+            self.DISPLAYSURF.blit(self.scene.treetrunk, (self.scene.treetrunkx, self.scene.treetrunky))
+            self.DISPLAYSURF.blit(self.scene.treehead, (self.scene.treeheadx, self.scene.treeheady))
+
 
             pygame.display.update()
 
