@@ -13,6 +13,7 @@ import streaming
 class Game( object ):
 
     skt = skater.Skater()
+    sk8erJump = 0
     scene = [] # scene.Scene()
 
     board = []
@@ -132,6 +133,9 @@ class Game( object ):
                 self.gcount -= 1
                 if self.gcount == 0:
                     self.countdown = False
+        if event.type == "baseEvent":
+            print "hellooooooooo!!!!!"
+            self.sk8erJump = event.data
         if event.type == "highDropEvent":
             # print event.type
             self.treeshake = event.data
@@ -154,16 +158,15 @@ class Game( object ):
     def update( self ):
         self.skt.boardy = self.jumpvalue * self.boardDelta
 
-        print ":o"
-        print self.jumpvalue
-        print streaming.MusicStreamer.BASSDROPTHRESH + 1
+        # print ":o"
+        # print self.jumpvalue
+        # print streaming.MusicStreamer.BASSDROPTHRESH + 1
 
         # move the board
         if self.jumpvalue <= streaming.MusicStreamer.BASSDROPTHRESH + 1:
             print ":D"
             # ftext = pygame.font.Font.render(":D heloo!OO!O", True, 0, background=None)
             self.skt.boardy = 0 + self.sktrheight # Board wheels
-
         scope = []
         # move the trees
         for x in range(0, len(self.scene)):
@@ -200,10 +203,14 @@ class Game( object ):
 
             # this is super necessary
             # print "skate: {0} tree: {1} trunk: {2}".format(self.skt.boardy, self.scene.treeheady, self.scene.treetrunky)
-            print self.skt.boardy
+            # print self.skt.boardy
+            print self.sk8erJump
 
             # clear screen
             self.DISPLAYSURF.fill(self.YELLOW)
+
+            # sk8er
+            sk8er = pygame.image.load("sk8er.png")
 
             # scener
             # trees
@@ -214,13 +221,12 @@ class Game( object ):
             BG3 = pygame.image.load("BG1.png")
             if self.gcount <= -800 * 2:
                 self.gcount = 0
-            print "count: {0}".format(self.gcount)
+            # print "count: {0}".format(self.gcount)
             if self.gcount % self.gcountTHRESH == 0:
                 # self.gcount += self.gcountTHRESH
                 self.countdown = True
 
             count += 1
-
 
 
             self.DISPLAYSURF.blit(BG, (self.gcount,0))
@@ -236,6 +242,10 @@ class Game( object ):
             self.DISPLAYSURF.blit(self.board[0], (self.skt.boardx - 20, 400 - 1.5 - self.skt.boardy))
             self.DISPLAYSURF.blit(self.board[1], (self.skt.boardx + 20, 400 - 1.5 - self.skt.boardy))
             self.DISPLAYSURF.blit(self.board[2], (self.skt.boardx - 30, 400 - 6.5 - self.skt.boardy))
+
+            print self.sk8erJump
+
+            self.DISPLAYSURF.blit(sk8er, (self.skt.boardx - 30, 400 - 6.5 - self.skt.boardy - 124 + self.sk8erJump * 6))
 
 
             pygame.display.update()
