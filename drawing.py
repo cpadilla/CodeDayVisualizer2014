@@ -21,6 +21,7 @@ class Game( object ):
     WHITE = (255, 255, 255)
     FPS = 30
     fpsClock = pygame.time.Clock()
+    YELLOW = (255, 200, 0)
 
     def __init__(self, event_dispatcher):
         self.event_dispatcher = event_dispatcher
@@ -158,6 +159,7 @@ class Game( object ):
 
     def render( self ):
         # print "in renderer"
+        count = 0
         while (1==1):
             self.update()
 
@@ -166,12 +168,24 @@ class Game( object ):
             print self.skt.boardy
 
             # clear screen
-            self.DISPLAYSURF.fill(self.WHITE)
+            self.DISPLAYSURF.fill(self.YELLOW)
 
             # scener
             # trees
             # print self.scene.treeheady
-            # print self.scene.treetrunky
+            # print self.scene.treetrunky 
+            BG = pygame.image.load("BG1.png")
+            if count > 5000:
+                count = 0
+                BG = pygame.image.load("BG2.png")
+            else:
+                BG = pygame.image.load("BG1.png")
+
+            count += 1
+
+
+
+            self.DISPLAYSURF.blit(BG, (0,0))
             self.DISPLAYSURF.blit(self.scene.treetrunk, (self.scene.treetrunkx, 400 - 150 - self.scene.treetrunky))
             self.DISPLAYSURF.blit(self.scene.treehead, (self.scene.treeheadx, 400 - 150 - 10 - self.scene.treeheady))
 
