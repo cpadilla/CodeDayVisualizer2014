@@ -173,12 +173,12 @@ class MusicStreamer( object ):
 
             ### KILL EVENT ###
 
-            if matrixMean == np.mean(matrix):
+            if matrixMean == matrix:
                 meanCounter += 1
 
-            matrixMean = np.mean(matrix)
+            matrixMean = matrix
 
-            if meanCounter > 10:
+            if meanCounter > 20:
                 self.raiseKillMePlzEvent(111)
 
             # read some more data
