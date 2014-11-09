@@ -34,6 +34,8 @@ class Game( object ):
     fpsClock = pygame.time.Clock()
     YELLOW = (255, 200, 0)
 
+    OUTTATIME = 0
+
     def __init__(self, event_dispatcher):
         self.event_dispatcher = event_dispatcher
         print "Game dispatcher: {0}".format(self.event_dispatcher)
@@ -95,10 +97,10 @@ class Game( object ):
             temp = scene.Scene()
             self.scene.append(temp)
             self.scene[x].treetrunk = pygame.image.load('treetrunk.png')
-            self.scene[x].treetrunkx = 30 + x * self.distBtwTrees + random.randrange(1,100)
+            self.scene[x].treetrunkx = -30 + x * self.distBtwTrees + random.randrange(1,100)
             self.scene[x].treetrunky = 400 - 150
             self.scene[x].treehead = pygame.image.load('treehead.png')
-            self.scene[x].treeheadx = 40 + x * self.distBtwTrees + random.randrange(-5, 5)
+            self.scene[x].treeheadx = -20 + x * self.distBtwTrees + random.randrange(-5, 5)
             self.scene[x].treeheady = 400 - 150 - 10
             self.scene[x].yoffset = random.randrange(-20, 20)
 
@@ -237,11 +239,15 @@ class Game( object ):
 
             self.DISPLAYSURF.blit(side, (count, 470))
 
-            self.DISPLAYSURF.blit(BG, (self.gcount,0))
-            self.DISPLAYSURF.blit(BG2, (self.gcount+800,0))
-            self.DISPLAYSURF.blit(BG3, (self.gcount+800+800,0))
+            # self.DISPLAYSURF.blit(BG, (self.gcount,0))
+            # self.DISPLAYSURF.blit(BG2, (self.gcount+800,0))
+            # self.DISPLAYSURF.blit(BG3, (self.gcount+800+800,0))
 
             # trees
+            self.DISPLAYSURF.blit(BG, (self.gcount,self.gcount%5 - 25))
+            self.DISPLAYSURF.blit(BG2, (self.gcount+800,self.gcount%5 - 25))
+            self.DISPLAYSURF.blit(BG3, (self.gcount+800+800,self.gcount%5 - 25))
+
             for x in range(0, len(self.scene)):
                 try:
                     self.DISPLAYSURF.blit(self.scene[x].treetrunk, (self.scene[x].treetrunkx + x * self.distBtwTrees, 401 - 150 - self.scene[x].treetrunky + math.sin(self.scene[x].yoffset)))
