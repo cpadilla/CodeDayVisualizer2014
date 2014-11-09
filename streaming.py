@@ -1,3 +1,4 @@
+import threading
 import numpy as np
 import pyaudio
 import wave
@@ -11,11 +12,23 @@ bass = [2,3,4,5]
 mids = [6,7,8,9]
 highs = [10,12,13,14]
 
-class MusicStreamer( object ):
+class MusicStreamer( threading.Thread ):
+
+    EXIT = 0
 
     def __init__(self, event_dispatcher):
         self.event_dispatcher = event_dispatcher
-        print "Music dispatcher: {0}".format(self.event_dispatcher)
+        # print "Music dispatcher: {0}".format(self.event_dispatcher)
+
+        self.event_dispatcher.add_event_listener(
+            event.MusicEvent.KILLMEPLZ, self.on_event
+        )
+
+        # print "adding kill me plz listener..."
+        # self.event_dispatcher.add_event_listener(
+        #     event.MusicEvent.KILLMEPLZ, self.readMusic
+        # )
+        # print "added!"
 
     def raiseFrequencyEvent(self, value):
         """
@@ -32,7 +45,7 @@ class MusicStreamer( object ):
         """
         Dispatch the frequency event
         """
-        print "raising Bass frequency event"
+        # print "raising Bass frequency event"
         event.MusicEvent.data = value
 
         self.event_dispatcher.dispatch_event(
@@ -43,7 +56,7 @@ class MusicStreamer( object ):
         """
         Dispatch the frequency event
         """
-        print "raising Bass Drop frequency event"
+        # print "raising Bass Drop frequency event"
         event.MusicEvent.data = value
 
         self.event_dispatcher.dispatch_event(
@@ -54,7 +67,7 @@ class MusicStreamer( object ):
         """
         Dispatch the frequency event
         """
-        print "raising Mids frequency event"
+        # print "raising Mids frequency event"
         event.MusicEvent.data = value
 
         self.event_dispatcher.dispatch_event(
@@ -65,7 +78,7 @@ class MusicStreamer( object ):
         """
         Dispatch the frequency event
         """
-        print "raising Mids Drop frequency event"
+        # print "raising Mids Drop frequency event"
         event.MusicEvent.data = value
 
         self.event_dispatcher.dispatch_event(
@@ -76,7 +89,7 @@ class MusicStreamer( object ):
         """
         Dispatch the frequency event
         """
-        print "raising High frequency event"
+        # print "raising High frequency event"
         event.MusicEvent.data = value
 
         self.event_dispatcher.dispatch_event(
@@ -87,7 +100,7 @@ class MusicStreamer( object ):
         """
         Dispatch the frequency event
         """
-        print "raising Highs Drop frequency event"
+        # print "raising Highs Drop frequency event"
         event.MusicEvent.data = value
 
         self.event_dispatcher.dispatch_event(
@@ -105,19 +118,34 @@ class MusicStreamer( object ):
             event.MusicEvent( event.MusicEvent.KILLMEPLZ, self )
         )
 
-    def readMusic(self):
+    def on_event(self, event ):
+        # KILLMEPLZ = "KillMePlz"
+        print "hello!"
+        if event.type == "KillMePlz":
+            print "good bye!"
+
+            self.stop()
+            # stream.stop_stream()
+            # stream.close()
+            EXIT = 1
+
+            # close PyAudio (5)
+            # p.terminate()
+
+    def readMusic(self ):
         CHUNK = 1024
-        # print "in this method!"
+        print "in this method!"
 
         # use a Blackman window
         window = np.blackman(CHUNK)
         wf = wave.open('music.wav', 'rb')
         swidth = wf.getsampwidth()
+
         # instantiate PyAudio (1)
-        p = pyaudio.PyAudio()
+        self.p = pyaudio.PyAudio()
 
     # open stream (2)
-        stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
+        self.stream = self.p.open(format=self.p.get_format_from_width(wf.getsampwidth()),
                     channels=wf.getnchannels(),
                     rate=wf.getframerate(),
                     output=True)
@@ -131,7 +159,8 @@ class MusicStreamer( object ):
         meanCounter = 0
 
         while data != '':
-            stream.write(data)
+
+            self.stream.write(data)
 
             indata = np.array(wave.struct.unpack("%dh"%(len(data)/swidth), data))
 
@@ -142,7 +171,7 @@ class MusicStreamer( object ):
             power = np.log10(np.abs(fftData))**2
             power = np.reshape(power,(16,CHUNK/16))
             matrix = np.int_(np.average(power,axis=1))
-            print(matrix)
+            # print(matrix)
 
             ### BASS Events ###
             if np.abs(oldBass - np.mean(matrix[bass])) > 4:
@@ -171,15 +200,25 @@ class MusicStreamer( object ):
             if np.mean(matrix[highs]) > HIGHTHRESH:
                 self.raiseHighsDropFrequencyEvent(np.mean(matrix[highs]))
 
-            ### KILL EVENT ###
-
             # if matrixMean == matrix
                 # meanCounter += 1
 
             # matrixMean = matrix
 
             if meanCounter > 20:
+                print "D:"
                 self.raiseKillMePlzEvent(111)
+
+            ### KILL EVENT ###
+            if self.EXIT == 1:
+                print "HNGGGGG"
+                self.stream.stop_stream()
+                self.stream.close()
+
+                # close PyAudio (5)
+                self.p.terminate()
+                data = ''
+                continue
 
             # read some more data
             data = wf.readframes(CHUNK)
@@ -189,6 +228,22 @@ class MusicStreamer( object ):
         stream.close()
 
         # close PyAudio (5)
-        p.terminate()
+        self.p.terminate()
         return
 
+    def quit(self):
+        print "OOOOOUUUUUUUHHHHH"
+        EXIT = 1
+        self.raiseKillMePlzEvent(111)
+        self.stop()
+
+    def stop(self):
+        print "XP"
+        # self._stop.set()
+        # stop stream (4)
+        self.stream.stop_stream()
+        self.stream.close()
+
+        # close PyAudio (5)
+        self.p.terminate()
+        return

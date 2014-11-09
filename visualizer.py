@@ -32,7 +32,16 @@ def main():
     print "Enter any key..."
     userinput = stdin.readline()
 
-    return
+    threading.Thread
 
 if __name__ == "__main__":
+    global EXIT
     main()
+
+    while True:
+            try:
+                time.sleep(1)
+            except:
+                # /* send a signal to threads, for example: */
+                EXIT = 1
+                raise

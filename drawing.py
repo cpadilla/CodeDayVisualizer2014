@@ -66,7 +66,7 @@ class Game( object ):
         pygame.display.set_caption('Test Screen')
         self.DISPLAYSURF.fill(self.WHITE)
 
-# Skateboard
+        # Skateboard
         for x in range(1, 3):
             temp = pygame.image.load('blip.png')
             self.board.append(temp)
@@ -74,9 +74,9 @@ class Game( object ):
         temp = pygame.image.load('board.png')
         self.board.append(temp)
 
-# Scenery
+        # Scenery
 
-# tree
+        # tree
         #for x in range(0, 2):
         self.scene.treetrunk = pygame.image.load('treetrunk.png')
         self.scene.treetrunkx = 30
@@ -84,6 +84,17 @@ class Game( object ):
         self.scene.treehead = pygame.image.load('treehead.png')
         self.scene.treeheadx = 30 - 10
         self.scene.treeheady = 400 - 150 - 10
+
+    def raiseKillMePlzEvent(self, value):
+        """
+        Dispatch the frequency event
+        """
+        print "raising Kill Me Plz event"
+        event.MusicEvent.data = value
+
+        self.event_dispatcher.dispatch_event(
+            event.MusicEvent( event.MusicEvent.KILLMEPLZ, self )
+        )
 
     def on_event(self, event ):
         """
@@ -99,14 +110,14 @@ class Game( object ):
         # BASSDROP = "bassDropEvent"
         # KILLMEPLZ = "KillMePlz"
         if event.type == "highDropEvent":
-            print event.type
+            # print event.type
             self.treeshake = event.data
             jumping = 1
         if event.type == "midsDropEvent":
-            print event.type
+            # print event.type
             self.trunkshake = event.data
         if event.type == "bassDropEvent":
-            print event.type
+            # print event.type
             self.jumpvalue = event.data
         if event.type == "KillMePlz":
             quit()
@@ -133,17 +144,20 @@ class Game( object ):
 
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    raiseKillMePlzEvent(111)
+                    self.quit()
                     pygame.quit()
                     sys.exit()
                 # check if key is pressed
                 # if you use event.key here it will give you error at runtime
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
+                    if event.key == pygame.K_ESCAPE:
+                        self.quit()
                         pygame.quit()
                         sys.exit()
 
     def render( self ):
-        print "in renderer"
+        # print "in renderer"
         while (1==1):
             self.update()
 
@@ -171,7 +185,10 @@ class Game( object ):
 
         return
 
-    def quit():
+    def quit( self ):
+        print "OOOOOUUUUUUUHHHHH"
+        self.raiseKillMePlzEvent(111)
+        EXIT = 1
         self.stop()
 
     def stop(self):
