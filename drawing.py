@@ -109,11 +109,17 @@ class Game( object ):
 
     def update( self ):
         self.skt.boardy = self.jumpvalue * 2
+
+        scope = []
         self.scene.treetrunky = self.trunkshake * 2
+        self.scene.treetrunkx -= 0.5
+        if self.scene.treetrunkx < -50:
+            self.scene.treetrunkx = 800
+
         self.scene.treeheady = self.treeshake * 2
-        # for event in self.event_dispatcher.getEvents():
-        #     if event == "frequencyEvent":
-        #         self.caty = self.jumpvalue
+        self.scene.treeheadx -= 0.5
+        if self.scene.treeheadx < -50:
+            self.scene.treeheadx = 800
 
     def render( self ):
         print "in renderer"
@@ -121,15 +127,11 @@ class Game( object ):
             self.update()
 
             # this is super necessary
-            print "skate: {0} tree: {1} trunk: {2}".format(self.skt.boardy, self.scene.treeheady, self.scene.treetrunky)
+            # print "skate: {0} tree: {1} trunk: {2}".format(self.skt.boardy, self.scene.treeheady, self.scene.treetrunky)
+            print self.skt.boardy
 
             # clear screen
             self.DISPLAYSURF.fill(self.WHITE)
-
-            # draw board
-            self.DISPLAYSURF.blit(self.board[0], (self.skt.boardx - 20, 400 - 10 - self.skt.boardy))
-            self.DISPLAYSURF.blit(self.board[1], (self.skt.boardx + 20, 400 - 10 - self.skt.boardy))
-            self.DISPLAYSURF.blit(self.board[2], (self.skt.boardx - 30, 400 - 15 - self.skt.boardy))
 
             # scener
             # trees
@@ -137,6 +139,11 @@ class Game( object ):
             # print self.scene.treetrunky
             self.DISPLAYSURF.blit(self.scene.treetrunk, (self.scene.treetrunkx, 400 - 150 - self.scene.treetrunky))
             self.DISPLAYSURF.blit(self.scene.treehead, (self.scene.treeheadx, 400 - 150 - 10 - self.scene.treeheady))
+
+            # draw board
+            self.DISPLAYSURF.blit(self.board[0], (self.skt.boardx - 20, 400 - 1.5 - self.skt.boardy))
+            self.DISPLAYSURF.blit(self.board[1], (self.skt.boardx + 20, 400 - 1.5 - self.skt.boardy))
+            self.DISPLAYSURF.blit(self.board[2], (self.skt.boardx - 30, 400 - 6.5 - self.skt.boardy))
 
 
             pygame.display.update()
