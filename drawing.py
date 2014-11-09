@@ -23,12 +23,12 @@ class Game( object ):
     jumpvalue = 0
     treeshake = 0
     trunkshake = 0
-    distBtwTrees = 120
+    distBtwTrees = 50
     treeScrollSpd = 0.75
     gcount = 0
     gcountTHRESH = 100
     countdown = False
-    TREES = 10
+    TREES = 20
     WHITE = (255, 255, 255)
     FPS = 30
     fpsClock = pygame.time.Clock()
@@ -98,7 +98,7 @@ class Game( object ):
             self.scene[x].treetrunkx = 30 + x * self.distBtwTrees + random.randrange(1,100)
             self.scene[x].treetrunky = 400 - 150
             self.scene[x].treehead = pygame.image.load('treehead.png')
-            self.scene[x].treeheadx = 60 + x * self.distBtwTrees + random.randrange(-5, 5)
+            self.scene[x].treeheadx = 40 + x * self.distBtwTrees + random.randrange(-5, 5)
             self.scene[x].treeheady = 400 - 150 - 10
 
     def raiseKillMePlzEvent(self, value):
