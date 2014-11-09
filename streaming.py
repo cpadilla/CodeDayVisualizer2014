@@ -127,7 +127,7 @@ class MusicStreamer( object ):
         oldBass = []
         oldMids = []
         oldHighs = []
-        matrixMean = 0
+        matrixMean = []
         meanCounter = 0
 
         while data != '':
@@ -173,10 +173,10 @@ class MusicStreamer( object ):
 
             ### KILL EVENT ###
 
-            if matrixMean == matrix:
-                meanCounter += 1
+            # if matrixMean == matrix
+                # meanCounter += 1
 
-            matrixMean = matrix
+            # matrixMean = matrix
 
             if meanCounter > 20:
                 self.raiseKillMePlzEvent(111)

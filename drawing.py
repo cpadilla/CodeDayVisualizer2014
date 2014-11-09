@@ -34,6 +34,10 @@ class Game( object ):
         # HIGHDROP = "highDropEvent"
         # MIDSDROP = "midsDropEvent"
         # BASSDROP = "bassDropEvent"
+        # KILLMEPLZ = "KillMePlz"
+        self.event_dispatcher.add_event_listener(
+            event.MusicEvent.KILLMEPLZ, self.on_event
+        )
         self.event_dispatcher.add_event_listener(
             event.MusicEvent.BEAT, self.on_event
         )
@@ -93,16 +97,19 @@ class Game( object ):
         # HIGHDROP = "highDropEvent"
         # MIDSDROP = "midsDropEvent"
         # BASSDROP = "bassDropEvent"
+        # KILLMEPLZ = "KillMePlz"
         if event.type == "highDropEvent":
-            print "highDropEvent"
+            print event.type
             self.treeshake = event.data
             jumping = 1
         if event.type == "midsDropEvent":
-            print "midsDropEvent"
+            print event.type
             self.trunkshake = event.data
         if event.type == "bassDropEvent":
-            print "bassDropEvent"
+            print event.type
             self.jumpvalue = event.data
+        if event.type == "KillMePlz":
+            quit()
         # self.caty = self.jumpvalue
         # print caty * 10
         # self.DISPLAYSURF.fill(self.WHITE)
@@ -123,6 +130,17 @@ class Game( object ):
         self.scene.treeheadx -= 0.5
         if self.scene.treeheadx < -50:
             self.scene.treeheadx = 800
+
+        for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                # check if key is pressed
+                # if you use event.key here it will give you error at runtime
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        pygame.quit()
+                        sys.exit()
 
     def render( self ):
         print "in renderer"
@@ -152,3 +170,9 @@ class Game( object ):
             pygame.display.update()
 
         return
+
+    def quit():
+        self.stop()
+
+    def stop(self):
+        self._stop.set()
