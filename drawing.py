@@ -5,8 +5,19 @@ import pygame
 import time
 import sys
 import event
+import skater
 
 class Game( object ):
+
+    skt = skater.Skater()
+
+    
+    board = []
+    jumping = 0
+    jumpvalue = 0
+    WHITE = (255, 255, 255)
+    FPS = 30
+    fpsClock = pygame.time.Clock()
 
     def __init__(self, event_dispatcher):
         self.event_dispatcher = event_dispatcher
@@ -14,31 +25,59 @@ class Game( object ):
 
         # Listen for Frequency events
         self.event_dispatcher.add_event_listener(
-            event.MusicEvent.FREQUENCY, self.on_frequency_event
+            event.MusicEvent.FREQUENCY, self.on_event
         )
 
-    FPS = 30
-    fpsClock = pygame.time.Clock()
-    WHITE = (255, 255, 255)
-    DISPLAYSURF = pygame.display.set_mode((400, 300))
-    pygame.display.set_caption('Test Screen')
-    DISPLAYSURF.fill(WHITE)
+        jumping = 0
 
-    catPic = []
-    for x in range(1, 21):
-        temp = pygame.image.load('blip.png')
-        catPic.append(temp)
+        self.DISPLAYSURF = pygame.display.set_mode((800, 400))
+        pygame.display.set_caption('Test Screen')
+        self.DISPLAYSURF.fill(self.WHITE)
 
-    catx = 10
-    caty = 10
+        for x in range(1, 3):
+            temp = pygame.image.load('blip.png')
+            self.board.append(temp)
 
-    def on_frequency_event(self, event ):
+        temp = pygame.image.load('board.png')
+        self.board.append(temp)
+
+    def on_event(self, event ):
         """
-        Event handler for MusicEvents.FREQUENCY events
+        Event handler for MusicEvents events
         """
-        print "game recieved frequency value: " + str(event.data)
+        # print "game recieved frequency value: " + str(event.data[1])
+        if event.type == "frequencyEvent":
+            self.jumpvalue = event.data[1] - 4
+            jumping = 1
+        # self.caty = self.jumpvalue
+        # print caty * 10
+        # self.DISPLAYSURF.fill(self.WHITE)
+        # self.DISPLAYSURF.blit(self.catPic[1], (self.catx, self.caty))
+        # pygame.display.update()
+        # self.fpsClock.tick(self.FPS)
 
+    def update( self ):
+        self.skt.boardy = self.jumpvalue * 2
+        # for event in self.event_dispatcher.getEvents():
+        #     if event == "frequencyEvent":
+        #         self.caty = self.jumpvalue
 
     def render( self ):
-        pygame.display.update()
+        print "in renderer"
+        while (1==1):
+            self.update()
+
+            # this is super necessary
+            print self.skt.boardy
+
+            # clear screen
+            self.DISPLAYSURF.fill(self.WHITE)
+
+            # draw board
+            self.DISPLAYSURF.blit(self.board[0], (self.skt.boardx - 20, 400 - 10 - self.skt.boardy))
+            self.DISPLAYSURF.blit(self.board[1], (self.skt.boardx + 20, 400 - 10 - self.skt.boardy))
+            self.DISPLAYSURF.blit(self.board[2], (self.skt.boardx - 30, 400 - 15 - self.skt.boardy))
+
+            pygame.display.update()
+
         return

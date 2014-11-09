@@ -14,7 +14,7 @@ class MusicStreamer( object ):
         """
         Dispatch the frequency event
         """
-        print "raising frequency event"
+        # print "raising frequency event"
         event.MusicEvent.data = value
 
         self.event_dispatcher.dispatch_event(
@@ -52,10 +52,12 @@ class MusicStreamer( object ):
             power = np.log10(np.abs(fftData))**2
             power = np.reshape(power,(8,CHUNK/8))
             matrix = np.int_(np.average(power,axis=1)/4)
-            print(matrix)
+            # print(matrix)
 
             # raise an event (value)
-            self.raiseFrequencyEvent(matrix)
+            # print matrix[1]
+            if matrix[1] > 3:
+                self.raiseFrequencyEvent(matrix)
 
             # read some more data
             data = wf.readframes(CHUNK)
