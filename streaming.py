@@ -2,9 +2,6 @@ import numpy as np
 import pyaudio
 import wave
 import sys
-import math
-import matplotlib.pyplot as plt
-import cmath
 
 class MusicStreamer( object ):
 
