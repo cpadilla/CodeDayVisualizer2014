@@ -29,6 +29,12 @@ class MusicEvent( Event ):
     TEMPO = "tempoEvent"
     FREQUENCY = "frequencyEvent"
     BEAT = "beatEvent"
+    BASS = "bassEvent"
+    MIDS = "midsEvent"
+    HIGHS = "highsEvent"
+    HIGHDROP = "highDropEvent"
+    MIDSDROP = "midsDropEvent"
+    BASSDROP = "bassDropEvent"
 
     data = 0
 

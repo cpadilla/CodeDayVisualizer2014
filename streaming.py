@@ -4,6 +4,13 @@ import wave
 import sys
 import event
 
+BASSTHRESH = 14
+MIDTHRESH = 14
+HIGHTHRESH = 14
+bass = [2,3,4,5]
+mids = [6,7,8,9]
+highs = [10,12,13,14]
+
 class MusicStreamer( object ):
 
     def __init__(self, event_dispatcher):
@@ -19,6 +26,72 @@ class MusicStreamer( object ):
 
         self.event_dispatcher.dispatch_event(
             event.MusicEvent( event.MusicEvent.FREQUENCY, self )
+        )
+
+    def raiseBassFrequencyEvent(self, value):
+        """
+        Dispatch the frequency event
+        """
+        print "raising Bass frequency event"
+        event.MusicEvent.data = value
+
+        self.event_dispatcher.dispatch_event(
+            event.MusicEvent( event.MusicEvent.BASS, self )
+        )
+
+    def raiseBassDropFrequencyEvent(self, value):
+        """
+        Dispatch the frequency event
+        """
+        print "raising Bass Drop frequency event"
+        event.MusicEvent.data = value
+
+        self.event_dispatcher.dispatch_event(
+            event.MusicEvent( event.MusicEvent.BASSDROP, self )
+        )
+
+    def raiseMidsFrequencyEvent(self, value):
+        """
+        Dispatch the frequency event
+        """
+        print "raising Mids frequency event"
+        event.MusicEvent.data = value
+
+        self.event_dispatcher.dispatch_event(
+            event.MusicEvent( event.MusicEvent.MIDS, self )
+        )
+
+    def raiseMidsDropFrequencyEvent(self, value):
+        """
+        Dispatch the frequency event
+        """
+        print "raising Mids Drop frequency event"
+        event.MusicEvent.data = value
+
+        self.event_dispatcher.dispatch_event(
+            event.MusicEvent( event.MusicEvent.MIDSDROP, self )
+        )
+
+    def raiseHighFrequencyEvent(self, value):
+        """
+        Dispatch the frequency event
+        """
+        print "raising High frequency event"
+        event.MusicEvent.data = value
+
+        self.event_dispatcher.dispatch_event(
+            event.MusicEvent( event.MusicEvent.HIGHS, self )
+        )
+
+    def raiseHighsDropFrequencyEvent(self, value):
+        """
+        Dispatch the frequency event
+        """
+        print "raising Highs Drop frequency event"
+        event.MusicEvent.data = value
+
+        self.event_dispatcher.dispatch_event(
+            event.MusicEvent( event.MusicEvent.HIGHDROP, self )
         )
 
     def readMusic(self):
@@ -40,6 +113,10 @@ class MusicStreamer( object ):
     # read data
         data = wf.readframes(CHUNK)
 
+        oldBass = []
+        oldMids = []
+        oldHighs = []
+
         while data != '':
             stream.write(data)
 
@@ -50,12 +127,37 @@ class MusicStreamer( object ):
             fftData = np.abs(np.fft.rfft(indata))
             fftData = np.delete(fftData,len(fftData)-1)
             power = np.log10(np.abs(fftData))**2
-            power = np.reshape(power,(8,CHUNK/8))
-            matrix = np.int_(np.average(power,axis=1)/4)
+            power = np.reshape(power,(16,CHUNK/16))
+            matrix = np.int_(np.average(power,axis=1))
             print(matrix)
 
-            # raise an event (value)
-            self.raiseFrequencyEvent(matrix)
+            ### BASS Events ###
+            if np.abs(oldBass - np.mean(matrix[bass])) > 4:
+                self.raiseBassDropFrequencyEvent(1)
+
+            oldBass = np.mean(matrix[bass])
+
+            if np.mean(matrix[bass]) > BASSTHRESH:
+                self.raiseBassFrequencyEvent(1)
+
+            ### MIDS Events ###
+            if np.abs(oldMids - np.mean(matrix[mids])) > 4:
+                self.raiseMidsDropFrequencyEvent(1)
+
+            oldMids = np.mean(matrix[mids])
+
+            if np.mean(matrix[mids]) > MIDTHRESH:
+                self.raiseMidsFrequencyEvent(1)
+
+            ### HIGHS Events ###
+            if np.abs(oldHighs - np.mean(matrix[highs])) > 4:
+                self.raiseHighsDropFrequencyEvent(1)
+
+            oldHighs = np.mean(matrix[highs])
+
+            if np.mean(matrix[highs]) > HIGHTHRESH:
+                self.raiseHighsDropFrequencyEvent(1)
+
 
             # read some more data
             data = wf.readframes(CHUNK)
