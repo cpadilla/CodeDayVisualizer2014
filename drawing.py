@@ -228,10 +228,9 @@ class Game( object ):
 
             count += 1
 
-
-            self.DISPLAYSURF.blit(BG, (self.gcount,0))
-            self.DISPLAYSURF.blit(BG2, (self.gcount+800,0))
-            self.DISPLAYSURF.blit(BG3, (self.gcount+800+800,0))
+            self.DISPLAYSURF.blit(BG, (self.gcount,self.gcount%5))
+            self.DISPLAYSURF.blit(BG2, (self.gcount+800,self.gcount%5))
+            self.DISPLAYSURF.blit(BG3, (self.gcount+800+800,self.gcount%5))
             for x in range(0, len(self.scene)):
                 self.DISPLAYSURF.blit(self.scene[x].treetrunk, (self.scene[x].treetrunkx + x * self.distBtwTrees, 400 - 150 - self.scene[x].treetrunky))
                 self.DISPLAYSURF.blit(self.scene[x].treehead, (self.scene[x].treeheadx + x * self.distBtwTrees, 400 - 150 - self.sktrheight - self.scene[x].treeheady))
