@@ -25,10 +25,12 @@ class Event( object ):
         """
         return self._data
 
-class MusicEvents( Event ):
+class MusicEvent( Event ):
     TEMPO = "tempoEvent"
     FREQUENCY = "frequencyEvent"
     BEAT = "beatEvent"
+
+    data = 0
 
 class EventDispatcher( object ):
     """
@@ -36,6 +38,7 @@ class EventDispatcher( object ):
     """
 
     def __init__(self):
+        print "event initialized"
         self._events = dict()
 
     def __del__(self):
@@ -58,6 +61,7 @@ class EventDispatcher( object ):
         """
         Dispatch an instance of Event class
         """
+        # print "dispatching event... {0}".format(event.type)
         # Dispatch the event to all the associated listeners
         if event.type in self._events.keys():
             listeners = self._events[ event.type ]
@@ -69,8 +73,10 @@ class EventDispatcher( object ):
         """
         Add an event listener for an event type
         """
+        print "adding event listener..."
         # Add listener to the event type
         if not self.has_listener( event_type, listener ):
+            print "added"
             listeners = self._events.get( event_type, [] )
 
             listeners.append( listener )
@@ -81,6 +87,8 @@ class EventDispatcher( object ):
         """
         Remove event listener.
         """
+        print "removing event listener"
+
         # Remove the listener from the event type
         if self.has_listener( event_type, listener ):
             listeners = self._events[ event_type ]

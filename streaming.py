@@ -2,15 +2,29 @@ import numpy as np
 import pyaudio
 import wave
 import sys
+import event
 
 class MusicStreamer( object ):
 
     def __init__(self, event_dispatcher):
         self.event_dispatcher = event_dispatcher
+        print "Music dispatcher: {0}".format(self.event_dispatcher)
+
+    def raiseFrequencyEvent(self, value):
+        """
+        Dispatch the frequency event
+        """
+        print "raising frequency event"
+        event.MusicEvent.data = value
+
+        self.event_dispatcher.dispatch_event(
+            event.MusicEvent( event.MusicEvent.FREQUENCY, self )
+        )
 
     def readMusic(self):
         CHUNK = 1024
-        print "in this method!"
+        # print "in this method!"
+
         # use a Blackman window
         window = np.blackman(CHUNK)
         wf = wave.open('music.wav', 'rb')
@@ -33,8 +47,12 @@ class MusicStreamer( object ):
 
             # take the fft and square each value
             fftData = abs(np.fft.rfft(indata))**2
-            nums = fftData[1] / 10000000000
-            print '{0:20f}'.format(fftData[1])
+
+
+
+            # raise an event (value)
+            if nums > 0:
+                self.raiseFrequencyEvent(0)
 
             # read some more data
             data = wf.readframes(CHUNK)
@@ -46,3 +64,4 @@ class MusicStreamer( object ):
         # close PyAudio (5)
         p.terminate()
         return
+
