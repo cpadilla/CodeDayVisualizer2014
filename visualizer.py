@@ -1,15 +1,9 @@
-from pygame.locals import *
 from thread import *
 from threading import Thread
-import numpy as np
-import pygame
-import time
-import pyaudio
-import wave
-import sys
+
 import drawing
 import streaming
-
+import event
 
 def run():
     '''CHUNK = 1024
@@ -84,14 +78,16 @@ def run():
 #       Main
 #####################
 
+dispatcher = event.EventDispatcher()
+
+streamer = streaming.MusicStreamer( dispatcher )
+
 # start_new_thread(streaming.readMusic, ())
-music = Thread(target = streaming.readMusic, args = ())
+music = Thread(target = streamer.readMusic, args = ())
 music.start()
 music.join()
 
-game = Thread(target = drawing.render, args = ())
-game.start()
-game.join()
+drawing.render()
 
 print "done!"
 
