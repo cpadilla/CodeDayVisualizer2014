@@ -7,6 +7,7 @@ import sys
 import event
 import skater
 import scene
+import streaming
 
 class Game( object ):
 
@@ -14,6 +15,7 @@ class Game( object ):
     scene = scene.Scene()
 
     board = []
+    boardDelta = 4
     jumping = 0
     jumpvalue = 0
     treeshake = 0
@@ -25,6 +27,8 @@ class Game( object ):
     def __init__(self, event_dispatcher):
         self.event_dispatcher = event_dispatcher
         print "Game dispatcher: {0}".format(self.event_dispatcher)
+
+        pygame.font.init()
 
         # Listen for Frequency events
         # BEAT = "beatEvent"
@@ -129,7 +133,15 @@ class Game( object ):
         # self.fpsClock.tick(self.FPS)
 
     def update( self ):
-        self.skt.boardy = self.jumpvalue * 2
+        self.skt.boardy = self.jumpvalue * self.boardDelta
+
+        print ":o"
+        print self.jumpvalue
+        print streaming.MusicStreamer.BASSDROPTHRESH + 1
+        if self.jumpvalue <= streaming.MusicStreamer.BASSDROPTHRESH + 1:
+            print ":D"
+            # ftext = pygame.font.Font.render(":D heloo!OO!O", True, 0, background=None)
+            self.skt.boardy = 0 + 10 # Board wheels
 
         scope = []
         self.scene.treetrunky = self.trunkshake * 2

@@ -5,14 +5,16 @@ import wave
 import sys
 import event
 
-BASSTHRESH = 14
-MIDTHRESH = 14
-HIGHTHRESH = 14
+BASSTHRESH = 14 /2
+MIDTHRESH = 14 /2
+HIGHTHRESH = 14 /2
 bass = [2,3,4,5]
 mids = [6,7,8,9]
 highs = [10,12,13,14]
 
 class MusicStreamer( threading.Thread ):
+
+    BASSDROPTHRESH = 4
 
     EXIT = 0
 
@@ -174,7 +176,7 @@ class MusicStreamer( threading.Thread ):
             # print(matrix)
 
             ### BASS Events ###
-            if np.abs(oldBass - np.mean(matrix[bass])) > 4:
+            if np.abs(oldBass - np.mean(matrix[bass])) > MusicStreamer.BASSDROPTHRESH:
                 self.raiseBassDropFrequencyEvent(np.abs(oldBass - np.mean(matrix[bass])))
 
             oldBass = np.mean(matrix[bass])
