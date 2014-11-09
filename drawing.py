@@ -1,5 +1,6 @@
 from pygame.locals import *
 from thread import *
+import random
 import numpy as np
 import pygame
 import time
@@ -7,17 +8,23 @@ import sys
 import event
 import skater
 import scene
+import streaming
 
 class Game( object ):
 
     skt = skater.Skater()
-    scene = scene.Scene()
+    scene = [] # scene.Scene()
 
     board = []
+    boardDelta = 4
+    sktrheight = 10
     jumping = 0
     jumpvalue = 0
     treeshake = 0
     trunkshake = 0
+    distBtwTrees = 120
+    treeScrollSpd = 0.75
+    TREES = 10
     WHITE = (255, 255, 255)
     FPS = 30
     fpsClock = pygame.time.Clock()
@@ -26,6 +33,8 @@ class Game( object ):
     def __init__(self, event_dispatcher):
         self.event_dispatcher = event_dispatcher
         print "Game dispatcher: {0}".format(self.event_dispatcher)
+
+        pygame.font.init()
 
         # Listen for Frequency events
         # BEAT = "beatEvent"
@@ -78,13 +87,15 @@ class Game( object ):
         # Scenery
 
         # tree
-        #for x in range(0, 2):
-        self.scene.treetrunk = pygame.image.load('treetrunk.png')
-        self.scene.treetrunkx = 30
-        self.scene.treetrunky = 400 - 150
-        self.scene.treehead = pygame.image.load('treehead.png')
-        self.scene.treeheadx = 30 - 10
-        self.scene.treeheady = 400 - 150 - 10
+        for x in range(0, self.TREES):
+            temp = scene.Scene()
+            self.scene.append(temp)
+            self.scene[x].treetrunk = pygame.image.load('treetrunk.png')
+            self.scene[x].treetrunkx = 30 + x * self.distBtwTrees + random.randrange(1,100)
+            self.scene[x].treetrunky = 400 - 150
+            self.scene[x].treehead = pygame.image.load('treehead.png')
+            self.scene[x].treeheadx = 60 + x * self.distBtwTrees + random.randrange(-5, 5)
+            self.scene[x].treeheady = 400 - 150 - 10
 
     def raiseKillMePlzEvent(self, value):
         """
@@ -130,18 +141,30 @@ class Game( object ):
         # self.fpsClock.tick(self.FPS)
 
     def update( self ):
-        self.skt.boardy = self.jumpvalue * 2
+        self.skt.boardy = self.jumpvalue * self.boardDelta
+
+        print ":o"
+        print self.jumpvalue
+        print streaming.MusicStreamer.BASSDROPTHRESH + 1
+
+        # move the board
+        if self.jumpvalue <= streaming.MusicStreamer.BASSDROPTHRESH + 1:
+            print ":D"
+            # ftext = pygame.font.Font.render(":D heloo!OO!O", True, 0, background=None)
+            self.skt.boardy = 0 + self.sktrheight # Board wheels
 
         scope = []
-        self.scene.treetrunky = self.trunkshake * 2
-        self.scene.treetrunkx -= 0.5
-        if self.scene.treetrunkx < -50:
-            self.scene.treetrunkx = 800
+        # move the trees
+        for x in range(0, len(self.scene)):
+            self.scene[x].treetrunky = self.trunkshake * 2
+            self.scene[x].treetrunkx -= self.treeScrollSpd
+            if self.scene[x].treetrunkx < -50 - x * self.distBtwTrees:
+                self.scene[x].treetrunkx = 800
 
-        self.scene.treeheady = self.treeshake * 2
-        self.scene.treeheadx -= 0.5
-        if self.scene.treeheadx < -50:
-            self.scene.treeheadx = 800
+            self.scene[x].treeheady = self.treeshake * 2
+            self.scene[x].treeheadx -= self.treeScrollSpd
+            if self.scene[x].treeheadx < -50 - x * self.distBtwTrees:
+                self.scene[x].treeheadx = 800
 
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -186,8 +209,11 @@ class Game( object ):
 
 
             self.DISPLAYSURF.blit(BG, (0,0))
-            self.DISPLAYSURF.blit(self.scene.treetrunk, (self.scene.treetrunkx, 400 - 150 - self.scene.treetrunky))
-            self.DISPLAYSURF.blit(self.scene.treehead, (self.scene.treeheadx, 400 - 150 - 10 - self.scene.treeheady))
+            for x in range(0, len(self.scene)):
+                self.DISPLAYSURF.blit(self.scene[x].treetrunk, (self.scene[x].treetrunkx + x * self.distBtwTrees, 400 - 150 - self.scene[x].treetrunky))
+                self.DISPLAYSURF.blit(self.scene[x].treehead, (self.scene[x].treeheadx + x * self.distBtwTrees, 400 - 150 - self.sktrheight - self.scene[x].treeheady))
+            # print self.scene.treetrunky
+            
 
             # draw board
             self.DISPLAYSURF.blit(self.board[0], (self.skt.boardx - 20, 400 - 1.5 - self.skt.boardy))
