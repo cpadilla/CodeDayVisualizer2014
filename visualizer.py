@@ -1,29 +1,18 @@
 from pygame.locals import *
 from thread import *
+from threading import Thread
 import numpy as np
 import pygame
 import time
 import pyaudio
 import wave
 import sys
+import drawing
+import streaming
 
-FPS = 30
-fpsClock = pygame.time.Clock()
-WHITE = (255, 255, 255)
-DISPLAYSURF = pygame.display.set_mode((400, 300))
-pygame.display.set_caption('Test Screen')
-DISPLAYSURF.fill(WHITE)
-
-catPic = []
-for x in range(1, 21):
-    temp = pygame.image.load('blip.png')
-    catPic.append(temp)
-
-catx = 10
-caty = 10
 
 def run():
-    CHUNK = 1024
+    '''CHUNK = 1024
     print ("hello!")
 
     # use a Blackman window
@@ -57,26 +46,20 @@ def run():
         # print (fftData[1] / 100).radjust(20)
         # print int(fftData[1])
 
-        ''' lin = "|"
-        bar = ""
-        for x in range(1, int(nums)):
-            bar = bar + lin
-        print bar '''
         #print '{0:20f}'.format(fftData[1]
 
         DISPLAYSURF.fill(WHITE)
-        for x in range(1,20):
-            nums = fftData[x] / 10000000000
-            catx = 10 * x
-            caty = nums / 10
-            if (frame == 5):
-                print x
-                DISPLAYSURF.blit(catPic[x], (catx, caty))
-                pygame.display.update()
-                fpsClock.tick(FPS)
-                frame = 0
-            else:
-                frame = frame + 1
+        # for x in range(1,20):
+        nums = fftData[1] / 10000000000
+        catx = 10 
+        caty = nums / 10
+        if (frame == 5):
+            DISPLAYSURF.blit(catPic[1], (catx, caty))
+            pygame.display.update()
+            fpsClock.tick(FPS)
+            frame = 0
+        else:
+            frame = frame + 1
 
 
         # read some more data
@@ -88,11 +71,28 @@ def run():
 
     # close PyAudio (5)
     p.terminate()
-    return
+    return'''
 
-pygame.init()
+# pygame.init()
 
 " class Game(object):"
 # PyGame window vars
 
-run()
+# run()
+
+#####################
+#       Main
+#####################
+
+# start_new_thread(streaming.readMusic, ())
+music = Thread(target = streaming.readMusic, args = ())
+music.start()
+music.join()
+
+game = Thread(target = drawing.render, args = ())
+game.start()
+game.join()
+
+print "done!"
+
+
