@@ -174,7 +174,7 @@ class MusicStreamer( object ):
             ### KILL EVENT ###
 
             if matrixMean == np.mean(matrix):
-                meanCounter ++;
+                meanCounter++
 
             matrixMean = np.mean(matrix)
 
